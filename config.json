@@ -1,8 +1,4 @@
 {
-  "entry": {
-    "app": "./src/index.js"
-  },
-  "output": "./dist",
   "production": "https://production.site",
   "styles": {
     "extract": true
