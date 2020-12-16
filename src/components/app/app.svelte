@@ -1,106 +1,66 @@
 <script>
-    import Contact from '../contact/contact.svelte';
+    import {tick} from 'svelte';
+    import Product from '../product/product.svelte';
+    import Modal from '../modal/modal.svelte';
 
-    let count = 0;
-    const initialState = {
-        name: '',
-        title: '',
-        description: '',
-        image: '',
-    };
-    let values = {...initialState};
-    let isSubmitted = false;
-    let error = '';
-    let contacts = [];
-
-    $: if (count >= 10) {
-        console.log('count is dangerously high!');
-        count = 9;
-    }
-
-    $: uppercase = values.name.toUpperCase();
-
+    const products = [
+        {
+            id: 'p1',
+            title: 'A Book',
+            price: '9.99',
+        },
+        {
+            id: 'p2',
+            title: 'A Shoe',
+            price: '199.99',
+            bestseller: true,
+        },
+    ];
+    let text = 'This is some dummy text!';
+    let show = false;
     const handleClick = () => {
-        count += 1;
+        show = true;
     };
-    const handleInput = event => {
-        const {name, value} = event.target;
-
-        values = {
-            ...values,
-            [name]: value,
-        };
+    const handleCancel = () => {
+        show = false;
     };
-    const handleSubmit = () => {
-        if (
-            values.name.trim().length === 0
-            || values.title.trim().length === 0
-            || values.description.trim().length === 0
-            || values.image.trim().length === 0
-        ) {
-            error = 'Value is empty';
-        } else {
-            error = '';
-            isSubmitted = true;
-            contacts = [
-                ...contacts, {
-                    username: uppercase,
-                    title: values.title,
-                    description: values.description,
-                    image: values.image,
-                },
-            ];
+    const handleClose = () => {
+        show = false;
+    };
+    const handleKeydown = event => {
+        if (event.which !== 9) {
+            return;
         }
+
+        event.preventDefault();
+
+        const {selectionStart, selectionEnd, value} = event.target;
+
+        text = value.slice(0, selectionStart) + value.slice(selectionStart, selectionEnd).toUpperCase() + value.slice(selectionEnd);
+
+        tick().then(() => {
+            // eslint-disable-next-line no-param-reassign
+            event.target.selectionStart = selectionStart;
+            // eslint-disable-next-line no-param-reassign
+            event.target.selectionEnd = selectionEnd;
+        });
     };
 </script>
 
-<style>
-.form {
-    width: 30rem;
-    max-width: 100%;
-}
-</style>
+<h1>Hello World</h1>
 
-{#each contacts as contact, index}
-    <h2>#{index + 1}</h2>
-    <Contact props={{...contact}} />
-{:else}
-    <p>Empty cards. Start adding</p>
-{/each}
+<button on:click={handleClick}> Show modal </button>
 
-<h1>Hello {uppercase}!</h1>
-<button on:click={handleClick}>
-    Clicked
-    {count}
-    {count < 2 ? 'time' : 'times'}
-</button>
-
-{#if error}
-    <p>{error}</p>
+{#if show}
+    <Modal on:cancel={handleCancel} on:close={handleClose} let:didAgreed={closable}>
+        <h1 slot="header">Hi</h1>
+        <p>This works</p>
+        <button slot="footer" on:click={handleClose} disabled={!closable}>Confirm</button>
+    </Modal>
 {/if}
 
-<!-- Same functionality -> second one is shortcut -->
-<div class="form">
-    <div class="form-control">
-        <input name="name" type="text" on:input={handleInput} value={values.name} />
-        <input name="name" type="text" bind:value={values.name} />
-    </div>
-    <div class="form-control">
-        <input
-            name="title"
-            type="text"
-            on:input={handleInput}
-            value={values.title} />
-    </div>
-    <div class="form-control">
-        <input name="image" type="text" on:input={handleInput} value={values.image} />
-    </div>
-    <div class="form-control">
-        <textarea
-            name="description"
-            on:input={handleInput}>{values.description}</textarea>
-    </div>
-    <button on:click={handleSubmit}>
-        Add contact card
-    </button>
-</div>
+{#each products as product}
+    <Product {...product} on:add={event => console.log(event.detail)} on:delete={event => console.log(event)} />
+{/each}
+
+<textarea rows="5" value={text} on:keydown={handleKeydown} />

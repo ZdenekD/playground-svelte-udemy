@@ -38,14 +38,6 @@ button:active {
     border-color: #e40763;
 }
 
-button:disabled {
-    cursor: not-allowed;
-    background: #ccc;
-    color: #959595;
-    box-shadow: none;
-    border-color: #ccc;
-}
-
 input,
 textarea {
     width: 100%;

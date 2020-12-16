@@ -1,5 +1,7 @@
 <script>
     export let props;
+
+    const initialName = props.username;
 </script>
 
 <style>
@@ -66,7 +68,7 @@ section {
             <img src={props.image} alt={props.username} />
         </div>
         <div class="data">
-            <h1>{props.username}</h1>
+            <h1>{props.username} / {initialName}</h1>
             <h2>{props.title}</h2>
         </div>
     </header>
