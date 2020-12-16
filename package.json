@@ -32,7 +32,7 @@
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-loader": "^4.0.2",
     "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-svelte3": "^2.7.3",
+    "eslint-plugin-svelte3": "^3.0.0",
     "extended-define-webpack-plugin": "^0.1.3",
     "favicons-webpack-plugin": "^4.2.0",
     "file-loader": "^6.2.0",
@@ -43,7 +43,7 @@
     "lint-staged": "^10.5.1",
     "mini-css-extract-plugin": "^1.3.3",
     "postcss": "^8.1.10",
-    "postcss-import": "^13.0.0",
+    "postcss-import": "^14.0.0",
     "postcss-load-config": "^3.0.0",
     "postcss-loader": "^4.1.0",
     "postcss-modules": "^4.0.0",
@@ -59,12 +59,13 @@
     "stylelint-config-recommended": "^3.0.0",
     "stylelint-csstree-validator": "^1.9.0",
     "stylelint-order": "^4.1.0",
-    "svelte": "^3.29.4",
     "svelte-loader": "^2.13.6",
     "svelte-preprocess": "^4.5.2",
     "webpack": "4.44.2",
     "webpack-cli": "3.3.12",
     "webpack-dev-server": "^3.11.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "svelte": "^3.31.0"
+  }
 }

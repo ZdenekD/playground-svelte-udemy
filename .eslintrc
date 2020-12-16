@@ -23,12 +23,7 @@
   ],
   "rules": {
     // Enforce line breaks between array elements
-    "array-element-newline": [
-      "error",
-      {
-        "minItems": 3
-      }
-    ],
+    "array-element-newline": ["error"],
     // Enforce line breaks after opening and before closing array brackets
     "array-bracket-newline": [
       "error",

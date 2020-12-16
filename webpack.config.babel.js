@@ -50,8 +50,8 @@ plugins.push(
 if (styles.extract) {
     plugins.unshift(
         new MiniCssExtractPlugin({
-            filename: '[hash].css',
-            chunkFilename: '[hash].css',
+            filename: '[hash:8].css',
+            chunkFilename: '[hash:8].css',
         })
     );
 }
@@ -116,8 +116,8 @@ plugins.push(new ProgressPlugin({format: `Building [:bar] ${chalk.green.bold(':p
 module.exports = () => ({
     entry,
     output: {
-        filename: '[hash].js',
-        chunkFilename: '[hash].js',
+        filename: '[hash:8].js',
+        chunkFilename: '[hash:8].js',
         path: path.resolve(__dirname, output),
         publicPath: '/',
     },
@@ -163,7 +163,8 @@ module.exports = () => ({
                                 babel: {
                                     presets: [
                                         [
-                                            '@babel/preset-env', {
+                                            '@babel/preset-env',
+                                            {
                                                 useBuiltIns: 'usage',
                                                 corejs: 3,
                                                 modules: false,
@@ -183,7 +184,8 @@ module.exports = () => ({
                 include: path.resolve(__dirname, 'src'),
                 exclude: /node_modules|vendor/,
                 use: [
-                    {loader: MiniCssExtractPlugin.loader}, {
+                    {loader: MiniCssExtractPlugin.loader},
+                    {
                         loader: 'css-loader',
                         options: {sourceMap: !isProduction},
                     },
