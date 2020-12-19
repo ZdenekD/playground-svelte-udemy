@@ -1,4 +1,4 @@
-import './assets/styles/global.css';
+import './assets/styles/base.css';
 import App from './components/app/app.svelte';
 
 const app = new App({target: document.body});

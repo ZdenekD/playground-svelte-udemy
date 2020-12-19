@@ -1,66 +1,77 @@
 <script>
-    import {tick} from 'svelte';
-    import Product from '../product/product.svelte';
-    import Modal from '../modal/modal.svelte';
+    import Grid from '../grid/grid.svelte';
+    import Form from '../form/form.svelte';
+    import Header from '../../UI/header/header.svelte';
+    import Button from '../../UI/button/button.svelte';
 
-    const products = [
+    let meetups = [
         {
-            id: 'p1',
-            title: 'A Book',
-            price: '9.99',
+            id: 'm1',
+            title: 'Coding Bootcamp',
+            subtitle: 'Learn to code in 2 hours',
+            description: 'In this meetup, we will have some experts that teach you how to code',
+            image:
+                'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Caffe_Nero_coffee_bar%2C_High_St%2C_Sutton%2C_Surrey%2C_Greater_London.JPG/800px-Caffe_Nero_coffee_bar%2C_High_St%2C_Sutton%2C_Surrey%2C_Greater_London.JPG',
+            address: '27th Nerd Road, 32523 New York',
+            email: 'code@test.com',
+            isFavorite: false,
         },
         {
-            id: 'p2',
-            title: 'A Shoe',
-            price: '199.99',
-            bestseller: true,
+            id: 'm2',
+            title: 'Swim Together',
+            subtitle: 'Let go for some swimming',
+            description: 'We will simply swim some rounds',
+            image:
+                'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Olympic_swimming_pool_%28Tbilisi%29.jpg/800px-Olympic_swimming_pool_%28Tbilisi%29.jpg',
+            address: '27th Nerd Road, 32523 New York',
+            email: 'swim@test.com',
+            isFavorite: false,
         },
     ];
-    let text = 'This is some dummy text!';
-    let show = false;
-    const handleClick = () => {
-        show = true;
+    let editMode = false;
+
+    const handleSubmit = event => {
+        const meetup = {
+            id: Math.ceil(Math.random() * 10000000000).toString(),
+            ...event.detail,
+        };
+
+        meetups = [meetup, ...meetups];
+        editMode = false;
     };
-    const handleCancel = () => {
-        show = false;
+    const handleFavorite = event => {
+        const id = event.detail;
+        const meetup = {...meetups.find(item => item.id === id)};
+        const index = meetups.findIndex(item => item.id === id);
+
+        meetup.isFavorite = !meetup.isFavorite;
+
+        const updated = [...meetups];
+
+        updated[index] = meetup;
+        meetups = updated;
+    };
+    const handleToggle = () => {
+        editMode = !editMode;
     };
     const handleClose = () => {
-        show = false;
-    };
-    const handleKeydown = event => {
-        if (event.which !== 9) {
-            return;
-        }
-
-        event.preventDefault();
-
-        const {selectionStart, selectionEnd, value} = event.target;
-
-        text = value.slice(0, selectionStart) + value.slice(selectionStart, selectionEnd).toUpperCase() + value.slice(selectionEnd);
-
-        tick().then(() => {
-            // eslint-disable-next-line no-param-reassign
-            event.target.selectionStart = selectionStart;
-            // eslint-disable-next-line no-param-reassign
-            event.target.selectionEnd = selectionEnd;
-        });
+        editMode = false;
     };
 </script>
 
-<h1>Hello World</h1>
+<style>
+    @import './app.css';
+</style>
 
-<button on:click={handleClick}> Show modal </button>
+<Header />
+<main>
+    <div class="controls">
+        <Button on:click={handleToggle}>Add Meetup</Button>
 
-{#if show}
-    <Modal on:cancel={handleCancel} on:close={handleClose} let:didAgreed={closable}>
-        <h1 slot="header">Hi</h1>
-        <p>This works</p>
-        <button slot="footer" on:click={handleClose} disabled={!closable}>Confirm</button>
-    </Modal>
-{/if}
+        {#if editMode}
+            <Form on:save={handleSubmit} on:close={handleClose} />
+        {/if}
+    </div>
 
-{#each products as product}
-    <Product {...product} on:add={event => console.log(event.detail)} on:delete={event => console.log(event)} />
-{/each}
-
-<textarea rows="5" value={text} on:keydown={handleKeydown} />
+    <Grid {meetups} on:togglefavorite={handleFavorite} />
+</main>
