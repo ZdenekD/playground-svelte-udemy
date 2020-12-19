@@ -12,17 +12,18 @@
   "overrides": [
     {
       "files": ["**/*.svelte"],
-      "processor": "svelte3/svelte3"
+      "processor": "svelte3/svelte3",
+      "rules": {
+        "import/first": 0,
+        "import/no-mutable-exports": 0,
+        "import/prefer-default-export": 0,
+        "svelte3/ignore-styles": 0
+      }
     }
   ],
   "rules": {
     // Enforce line breaks between array elements
-    "array-element-newline": [
-      "error",
-      {
-        "minItems": 3
-      }
-    ],
+    "array-element-newline": ["error"],
     // Enforce line breaks after opening and before closing array brackets
     "array-bracket-newline": [
       "error",
@@ -81,7 +82,7 @@
     "no-console": [
       "error",
       {
-        "allow": ["info", "log", "assert"]
+        "allow": ["info", "log", "assert", "dir"]
       }
     ],
     // This rule aims to reduce the scrolling required when reading through your code. It will warn when the maximum amount of empty lines has been exceeded.

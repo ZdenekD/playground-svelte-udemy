@@ -13,15 +13,20 @@ import preprocessor from 'svelte-preprocess';
 const env = require('dotenv').config().parsed;
 const config = require('./config.json');
 
-const isProduction = env.NODE_ENV === 'production';
-const {entry, output, styles, assets} = config;
+const isProduction = process.env.NODE_ENV === 'production';
+const {
+    entry = {app: './src/index.js'},
+    output = './dist',
+    html = './src/index.html',
+    styles,
+    assets,
+} = config;
 const plugins = [];
 
 // HTML webpack plugin
 plugins.push(
     new HtmlWebpackPlugin({
-        template: path.resolve(__dirname, 'src/index.html'),
-        filename: 'index.html',
+        template: path.resolve(__dirname, html),
         inject: 'body',
         minify: {
             collapseWhitespace: true,
@@ -45,8 +50,8 @@ plugins.push(
 if (styles.extract) {
     plugins.unshift(
         new MiniCssExtractPlugin({
-            filename: '[name].[hash].css',
-            chunkFilename: '[id].[hash].css',
+            filename: '[hash:8].css',
+            chunkFilename: '[hash:8].css',
         })
     );
 }
@@ -111,8 +116,8 @@ plugins.push(new ProgressPlugin({format: `Building [:bar] ${chalk.green.bold(':p
 module.exports = () => ({
     entry,
     output: {
-        filename: '[name].[hash].js',
-        chunkFilename: '[name].[hash].js',
+        filename: '[hash:8].js',
+        chunkFilename: '[hash:8].js',
         path: path.resolve(__dirname, output),
         publicPath: '/',
     },
@@ -136,10 +141,12 @@ module.exports = () => ({
         historyApiFallback: true,
         noInfo: true,
         port: env.WEBPACK_PORT || 3010,
-        stats: 'errors-only',
         hot: true,
+        open: true,
+        compress: true,
     },
-    devtool: !isProduction ? 'cheap-module-eval-source-map' : '',
+    devtool: !isProduction ? 'cheap-module-eval-source-map' : undefined,
+    stats: 'errors-only',
     context: __dirname,
     module: {
         rules: [
@@ -152,14 +159,16 @@ module.exports = () => ({
                         loader: 'svelte-loader',
                         options: {
                             emitCss: true,
-                            hotReload: true,
                             preprocess: preprocessor({
                                 babel: {
                                     presets: [
                                         [
-                                            '@babel/preset-env', {
+                                            '@babel/preset-env',
+                                            {
                                                 useBuiltIns: 'usage',
                                                 corejs: 3,
+                                                modules: false,
+                                                targets: {esmodules: true},
                                             },
                                         ],
                                     ],
@@ -175,10 +184,8 @@ module.exports = () => ({
                 include: path.resolve(__dirname, 'src'),
                 exclude: /node_modules|vendor/,
                 use: [
+                    {loader: MiniCssExtractPlugin.loader},
                     {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {hmr: !isProduction},
-                    }, {
                         loader: 'css-loader',
                         options: {sourceMap: !isProduction},
                     },
@@ -190,7 +197,7 @@ module.exports = () => ({
                 use: [
                     {
                         loader: 'file-loader',
-                        options: {name: 'images/[hash:base64:8].[ext]'},
+                        options: {name: '[hash:base64:8].[ext]'},
                     },
                 ],
             },
@@ -205,7 +212,7 @@ module.exports = () => ({
                 use: [
                     {
                         loader: 'file-loader',
-                        options: {name: 'fonts/[hash:base64:8].[ext]'},
+                        options: {name: '[hash:base64:8].[ext]'},
                     },
                 ],
             },
