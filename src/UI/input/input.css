@@ -28,3 +28,13 @@ label {
     margin: .25rem 0;
     padding: .5rem 0;
 }
+
+.invalid {
+    background: #fde3e3;
+    border-color: #f00;
+}
+
+.message {
+    margin: .25rem 0;
+    color: #f00;
+}

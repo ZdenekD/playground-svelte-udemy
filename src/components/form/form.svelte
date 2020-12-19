@@ -3,16 +3,24 @@
     import Button from '../../UI/button/button.svelte';
     import Input from '../../UI/input/input.svelte';
     import Modal from '../../UI/modal/modal.svelte';
+    import {isEmpty, isValidEmail} from '../../helpers/validation';
 
     const dispatch = createEventDispatcher();
     const initialState = {
         title: '',
+        titleValidity: false,
         subtitle: '',
+        subtitleValidity: false,
         address: '',
+        addressValidity: false,
         email: '',
+        emailValidity: false,
         image: '',
+        imageValidity: false,
         description: '',
+        descriptionValidity: false,
     };
+    let isFormValid = false;
     const values = {...initialState};
     const handleSubmit = () => {
         dispatch('save', {...values});
@@ -20,6 +28,22 @@
     const handleCancel = () => {
         dispatch('close');
     };
+
+    $: values.titleValidity = !isEmpty(values.title);
+    $: values.subtitleValidity = !isEmpty(values.subtitle);
+    $: values.addressValidity = !isEmpty(values.address);
+    $: values.emailValidity = !isEmpty(values.email) && isValidEmail(values.email);
+    $: values.imageValidity = !isEmpty(values.image);
+    $: values.descriptionValidity = !isEmpty(values.description);
+    // prettier-ignore
+    $: isFormValid = (
+        values.titleValidity
+        && values.subtitleValidity
+        && values.addressValidity
+        && values.emailValidity
+        && values.imageValidity
+        && values.descriptionValidity
+    );
 </script>
 
 <style>
@@ -32,6 +56,8 @@
             id="title"
             label="Title"
             value={values.title}
+            isValid={values.titleValidity}
+            message="Please enter a valid title."
             on:input={event => {
                 values.title = event.target.value;
             }} />
@@ -39,6 +65,8 @@
             id="subtitle"
             label="Subtitle"
             value={values.subtitle}
+            isValid={values.subtitleValidity}
+            message="Please enter a valid subtitle."
             on:input={event => {
                 values.subtitle = event.target.value;
             }} />
@@ -46,6 +74,8 @@
             id="address"
             label="Address"
             value={values.address}
+            isValid={values.addressValidity}
+            message="Please enter a valid address."
             on:input={event => {
                 values.address = event.target.value;
             }} />
@@ -53,6 +83,8 @@
             id="image"
             label="Image"
             value={values.image}
+            isValid={values.imageValidity}
+            message="Please enter a valid image."
             on:input={event => {
                 values.image = event.target.value;
             }} />
@@ -60,6 +92,8 @@
             id="email"
             label="E-mail"
             value={values.email}
+            isValid={values.emailValidity}
+            message="Please enter a valid e-mail."
             type="email"
             on:input={event => {
                 values.email = event.target.value;
@@ -68,6 +102,8 @@
             id="description"
             label="Description"
             value={values.description}
+            isValid={values.descriptionValidity}
+            message="Please enter a valid description."
             controlType="textarea"
             on:input={event => {
                 values.description = event.target.value;
@@ -75,6 +111,6 @@
     </form>
     <div slot="footer">
         <Button type="button" mode="outline" on:click={handleCancel}>Cancel</Button>
-        <Button type="button" on:click={handleSubmit}>Save</Button>
+        <Button type="button" on:click={handleSubmit} disabled={!isFormValid}>Save</Button>
     </div>
 </Modal>
