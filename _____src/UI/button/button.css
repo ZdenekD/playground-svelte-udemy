@@ -1,0 +1,80 @@
+button {
+    padding: .5rem 1rem;
+    cursor: pointer;
+    background: #cf0056;
+    color: #fff;
+    font: inherit;
+    text-decoration: none;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, .26);
+    border-radius: 5px;
+    border: 1px solid #cf0056;
+
+    &:hover,
+    &:focus,
+    &:active {
+        background: #e40763;
+        box-shadow: 1px 1px 8px rgba(77, 51, 51, .26);
+        border-color: #e40763;
+    }
+
+    &:disabled {
+
+        &,
+        &:hover,
+        &:focus,
+        &:active {
+            cursor: not-allowed;
+            background: #ccc;
+            color: #959595;
+            box-shadow: none;
+            border-color: #ccc;
+        }
+    }
+}
+
+.success {
+    background: #01a129;
+    border-color: #01a129;
+
+    &:hover,
+    &:active,
+    &:focus {
+        background: #1ac745;
+        border-color: #1ac745;
+    }
+}
+
+.outline {
+    background: transparent;
+    color: #cf0056;
+    box-shadow: none;
+
+    &:hover,
+    &:active,
+    &:focus {
+        background: #ffc7de;
+        box-shadow: none;
+    }
+
+    &:disabled {
+
+        &,
+        &:hover,
+        &:active,
+        &:focus {
+            background: transparent;
+            color: #ccc;
+        }
+    }
+
+    &.success {
+        color: #01a129;
+        border-color: #01a129;
+
+        &:hover,
+        &:active,
+        &:focus {
+            background: #c2ffd1;
+        }
+    }
+}

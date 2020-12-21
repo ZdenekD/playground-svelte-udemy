@@ -1,9 +1,12 @@
 <script>
     import {createEventDispatcher} from 'svelte';
+    import meetups from '../../store/meetups';
     import Button from '../../UI/button/button.svelte';
     import Input from '../../UI/input/input.svelte';
     import Modal from '../../UI/modal/modal.svelte';
     import {isEmpty, isValidEmail} from '../../helpers/validation';
+
+    export let id = null;
 
     const dispatch = createEventDispatcher();
     const initialState = {
@@ -21,13 +24,29 @@
         descriptionValidity: false,
     };
     let isFormValid = false;
-    const values = {...initialState};
+    let values = {...initialState};
     const handleSubmit = () => {
-        dispatch('save', {...values});
+        if (id) {
+            meetups.update(id, values);
+        } else {
+            meetups.add({...values});
+        }
+
+        dispatch('close');
     };
     const handleCancel = () => {
         dispatch('close');
     };
+    const handleRemove = () => {
+        meetups.remove(id);
+        dispatch('close');
+    };
+
+    if (id) {
+        meetups.subscribe(items => {
+            values = {...items.find(item => item.id === id)};
+        })();
+    }
 
     $: values.titleValidity = !isEmpty(values.title);
     $: values.subtitleValidity = !isEmpty(values.subtitle);
@@ -112,5 +131,8 @@
     <div slot="footer">
         <Button type="button" mode="outline" on:click={handleCancel}>Cancel</Button>
         <Button type="button" on:click={handleSubmit} disabled={!isFormValid}>Save</Button>
+        {#if id}
+            <Button type="button" on:click={handleRemove}>Delete</Button>
+        {/if}
     </div>
 </Modal>

@@ -1,61 +1,32 @@
 <script>
+    import meetups from '../../store/meetups';
     import Grid from '../grid/grid.svelte';
     import Form from '../form/form.svelte';
+    import Detail from '../detail/detail.svelte';
     import Header from '../../UI/header/header.svelte';
-    import Button from '../../UI/button/button.svelte';
 
-    let meetups = [
-        {
-            id: 'm1',
-            title: 'Coding Bootcamp',
-            subtitle: 'Learn to code in 2 hours',
-            description: 'In this meetup, we will have some experts that teach you how to code',
-            image:
-                'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Caffe_Nero_coffee_bar%2C_High_St%2C_Sutton%2C_Surrey%2C_Greater_London.JPG/800px-Caffe_Nero_coffee_bar%2C_High_St%2C_Sutton%2C_Surrey%2C_Greater_London.JPG',
-            address: '27th Nerd Road, 32523 New York',
-            email: 'code@test.com',
-            isFavorite: false,
-        },
-        {
-            id: 'm2',
-            title: 'Swim Together',
-            subtitle: 'Let go for some swimming',
-            description: 'We will simply swim some rounds',
-            image:
-                'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Olympic_swimming_pool_%28Tbilisi%29.jpg/800px-Olympic_swimming_pool_%28Tbilisi%29.jpg',
-            address: '27th Nerd Road, 32523 New York',
-            email: 'swim@test.com',
-            isFavorite: false,
-        },
-    ];
-    let editMode = false;
+    let isOpen = false;
+    let page = 'overview';
+    let id = null;
 
-    const handleSubmit = event => {
-        const meetup = {
-            id: Math.ceil(Math.random() * 10000000000).toString(),
-            ...event.detail,
-        };
-
-        meetups = [meetup, ...meetups];
-        editMode = false;
-    };
-    const handleFavorite = event => {
-        const id = event.detail;
-        const meetup = {...meetups.find(item => item.id === id)};
-        const index = meetups.findIndex(item => item.id === id);
-
-        meetup.isFavorite = !meetup.isFavorite;
-
-        const updated = [...meetups];
-
-        updated[index] = meetup;
-        meetups = updated;
-    };
     const handleToggle = () => {
-        editMode = !editMode;
+        isOpen = !isOpen;
     };
     const handleClose = () => {
-        editMode = false;
+        id = null;
+        isOpen = false;
+    };
+    const handleDetail = event => {
+        id = event.detail;
+        page = 'detail';
+    };
+    const handleEdit = event => {
+        id = event.detail;
+        isOpen = true;
+    };
+    const handleCloseDetail = () => {
+        id = null;
+        page = 'overview';
     };
 </script>
 
@@ -65,13 +36,13 @@
 
 <Header />
 <main>
-    <div class="controls">
-        <Button on:click={handleToggle}>Add Meetup</Button>
-
-        {#if editMode}
-            <Form on:save={handleSubmit} on:close={handleClose} />
-        {/if}
-    </div>
-
-    <Grid {meetups} on:togglefavorite={handleFavorite} />
+    {#if page === 'overview'}
+        <Grid meetups={$meetups} on:detail={handleDetail} on:edit={handleEdit} on:add={handleToggle} />
+    {:else}
+        <Detail {id} on:close={handleCloseDetail} />
+    {/if}
 </main>
+
+{#if isOpen}
+    <Form on:close={handleClose} {id} />
+{/if}
