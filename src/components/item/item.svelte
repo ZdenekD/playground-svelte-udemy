@@ -1,5 +1,6 @@
 <script>
     import {createEventDispatcher} from 'svelte';
+    import {fade} from 'svelte/transition';
     import meetups from '../../store/meetups';
     import Button from '../../UI/button/button.svelte';
     import Badge from '../../UI/badge/badge.svelte';
@@ -34,7 +35,7 @@
         <h2>{subtitle}</h2>
         <address>{address}</address>
     </header>
-    <div class="image"><img src={image} alt={title} /></div>
+    <div class="image"><img transition:fade={{duration: 400}} src={image} alt={title} /></div>
     <div class="content">
         <p>{description}</p>
     </div>

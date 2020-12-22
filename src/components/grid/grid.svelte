@@ -1,5 +1,7 @@
 <script>
     import {createEventDispatcher} from 'svelte';
+    import {fly} from 'svelte/transition';
+    import {flip} from 'svelte/animate';
     import Filter from '../filter/filter.svelte';
     import Item from '../item/item.svelte';
     import Button from '../../UI/button/button.svelte';
@@ -26,16 +28,18 @@
 </section>
 <section class="grid">
     {#each filtered as meetup (meetup.id)}
-        <Item
-            id={meetup.id}
-            title={meetup.title}
-            subtitle={meetup.subtitle}
-            description={meetup.description}
-            image={meetup.image}
-            email={meetup.email}
-            address={meetup.address}
-            isFavorite={meetup.isFavorite}
-            on:detail
-            on:edit />
+        <div transition:fly={{duration: 400, y: 20}} animate:flip={{duration: 300}}>
+            <Item
+                id={meetup.id}
+                title={meetup.title}
+                subtitle={meetup.subtitle}
+                description={meetup.description}
+                image={meetup.image}
+                email={meetup.email}
+                address={meetup.address}
+                isFavorite={meetup.isFavorite}
+                on:detail
+                on:edit />
+        </div>
     {/each}
 </section>
