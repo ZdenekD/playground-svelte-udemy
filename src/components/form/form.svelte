@@ -27,9 +27,40 @@
     let values = {...initialState};
     const handleSubmit = () => {
         if (id) {
-            meetups.update(id, values);
+            fetch(`https://svelte-c89da-default-rtdb.europe-west1.firebasedatabase.app/meetups/${id}.json`, {
+                method: 'PATCH',
+                body: JSON.stringify(values),
+                headers: {'Content-Type': 'application/json'},
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('An error occurred, please try again!');
+                    }
+
+                    meetups.update(id, values);
+                })
+                .catch(error => console.log(error));
         } else {
-            meetups.add({...values});
+            fetch('https://svelte-c89da-default-rtdb.europe-west1.firebasedatabase.app/meetups.json', {
+                method: 'POST',
+                body: JSON.stringify({...values, isFavorite: false}),
+                headers: {'Content-Type': 'application/json'},
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('An error occurred, please try again!');
+                    }
+
+                    return response.json();
+                })
+                .then(data => {
+                    meetups.add({
+                        ...values,
+                        isFavorite: false,
+                        id: data.name,
+                    });
+                })
+                .catch(error => console.log(error));
         }
 
         dispatch('close');
@@ -38,8 +69,16 @@
         dispatch('close');
     };
     const handleRemove = () => {
-        meetups.remove(id);
-        dispatch('close');
+        fetch(`https://svelte-c89da-default-rtdb.europe-west1.firebasedatabase.app/meetups/${id}.json`, {method: 'DELETE'})
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('An error occurred, please try again!');
+                }
+
+                meetups.remove(id);
+                dispatch('close');
+            })
+            .catch(error => console.log(error));
     };
 
     if (id) {

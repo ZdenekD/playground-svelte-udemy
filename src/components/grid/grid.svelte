@@ -27,6 +27,9 @@
     <Button on:click={() => dispatch('add')}>Add Meetup</Button>
 </section>
 <section class="grid">
+    {#if filtered.length === 0}
+        <p class="message">No meetups found.</p>
+    {/if}
     {#each filtered as meetup (meetup.id)}
         <div transition:fly={{duration: 400, y: 20}} animate:flip={{duration: 300}}>
             <Item
