@@ -14,36 +14,27 @@
     let id = null;
     let message;
 
-    onMount(() => {
+    onMount(async () => {
         isLoading = true;
 
-        fetch('https://svelte-c89da-default-rtdb.europe-west1.firebasedatabase.app/meetups.json')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('An error occurred, please try again!');
-                }
+        try {
+            const response = await fetch('https://svelte-c89da-default-rtdb.europe-west1.firebasedatabase.app/meetups.json');
+            const data = await response.json();
+            const items = [];
 
-                return response.json();
-            })
-            .then(data => {
-                const items = [];
-
-                Object.keys(data).forEach(key => {
-                    items.push({
-                        ...data[key],
-                        id: key,
-                    });
+            Object.keys(data).forEach(key => {
+                items.push({
+                    ...data[key],
+                    id: key,
                 });
-
-                setTimeout(() => {
-                    isLoading = false;
-                    meetups.setList(items.reverse());
-                }, 1000);
-            })
-            .catch(error => {
-                isLoading = false;
-                message = error.message;
             });
+
+            isLoading = false;
+            meetups.setList(items.reverse());
+        } catch (error) {
+            isLoading = false;
+            message = error.message;
+        }
     });
 
     const handleToggle = () => {

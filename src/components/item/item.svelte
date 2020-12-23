@@ -15,20 +15,18 @@
     export let isFavorite;
 
     const dispatch = createEventDispatcher();
-    const toggleFavorite = () => {
-        fetch(`https://svelte-c89da-default-rtdb.europe-west1.firebasedatabase.app/meetups/${id}.json`, {
-            method: 'PATCH',
-            body: JSON.stringify({isFavorite: !isFavorite}),
-            headers: {'Content-Type': 'application/json'},
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('An error occurred, please try again!');
-                }
+    const toggleFavorite = async () => {
+        try {
+            await fetch(`https://svelte-c89da-default-rtdb.europe-west1.firebasedatabase.app/meetups/${id}.json`, {
+                method: 'PATCH',
+                body: JSON.stringify({isFavorite: !isFavorite}),
+                headers: {'Content-Type': 'application/json'},
+            });
 
-                meetups.toggleFavorite(id);
-            })
-            .catch(error => console.log(error));
+            meetups.toggleFavorite(id);
+        } catch (error) {
+            console.log(error);
+        }
     };
 </script>
 

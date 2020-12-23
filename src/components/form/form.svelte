@@ -25,42 +25,36 @@
     };
     let isFormValid = false;
     let values = {...initialState};
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (id) {
-            fetch(`https://svelte-c89da-default-rtdb.europe-west1.firebasedatabase.app/meetups/${id}.json`, {
-                method: 'PATCH',
-                body: JSON.stringify(values),
-                headers: {'Content-Type': 'application/json'},
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('An error occurred, please try again!');
-                    }
+            try {
+                await fetch(`https://svelte-c89da-default-rtdb.europe-west1.firebasedatabase.app/meetups/${id}.json`, {
+                    method: 'PATCH',
+                    body: JSON.stringify(values),
+                    headers: {'Content-Type': 'application/json'},
+                });
 
-                    meetups.update(id, values);
-                })
-                .catch(error => console.log(error));
+                meetups.update(id, values);
+            } catch (error) {
+                console.log(error);
+            }
         } else {
-            fetch('https://svelte-c89da-default-rtdb.europe-west1.firebasedatabase.app/meetups.json', {
-                method: 'POST',
-                body: JSON.stringify({...values, isFavorite: false}),
-                headers: {'Content-Type': 'application/json'},
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('An error occurred, please try again!');
-                    }
+            try {
+                const response = await fetch('https://svelte-c89da-default-rtdb.europe-west1.firebasedatabase.app/meetups.json', {
+                    method: 'POST',
+                    body: JSON.stringify({...values, isFavorite: false}),
+                    headers: {'Content-Type': 'application/json'},
+                });
+                const data = await response.json();
 
-                    return response.json();
-                })
-                .then(data => {
-                    meetups.add({
-                        ...values,
-                        isFavorite: false,
-                        id: data.name,
-                    });
-                })
-                .catch(error => console.log(error));
+                meetups.add({
+                    ...values,
+                    isFavorite: false,
+                    id: data.name,
+                });
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         dispatch('close');
@@ -68,17 +62,14 @@
     const handleCancel = () => {
         dispatch('close');
     };
-    const handleRemove = () => {
-        fetch(`https://svelte-c89da-default-rtdb.europe-west1.firebasedatabase.app/meetups/${id}.json`, {method: 'DELETE'})
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('An error occurred, please try again!');
-                }
-
-                meetups.remove(id);
-                dispatch('close');
-            })
-            .catch(error => console.log(error));
+    const handleRemove = async () => {
+        try {
+            await fetch(`https://svelte-c89da-default-rtdb.europe-west1.firebasedatabase.app/meetups/${id}.json`, {method: 'DELETE'});
+            meetups.remove(id);
+            dispatch('close');
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     if (id) {
