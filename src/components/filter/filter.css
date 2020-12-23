@@ -1,0 +1,25 @@
+.button {
+    padding: .5rem 1rem;
+    cursor: pointer;
+    background: #aaa;
+    font: inherit;
+    font-size: 1rem;
+    border: 1px solid #aaa;
+
+    &:first-of-type {
+        border-radius: 5px 0 0 5px;
+    }
+
+    &:last-of-type {
+        border-radius: 0 5px 5px 0;
+    }
+
+    &:hover,
+    &:focus,
+    &:active,
+    &.active {
+        background: #cf0056;
+        color: #fff;
+        border-color: #cf0056;
+    }
+}

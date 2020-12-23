@@ -1,9 +1,9 @@
 <script>
     import {createEventDispatcher} from 'svelte';
+    import {fade} from 'svelte/transition';
+    import meetups from '../../store/meetups';
     import Button from '../../UI/button/button.svelte';
     import Badge from '../../UI/badge/badge.svelte';
-
-    const dispatch = createEventDispatcher();
 
     export let id;
     export let title;
@@ -13,6 +13,21 @@
     export let email;
     export let address;
     export let isFavorite;
+
+    const dispatch = createEventDispatcher();
+    const toggleFavorite = async () => {
+        try {
+            await fetch(`https://svelte-c89da-default-rtdb.europe-west1.firebasedatabase.app/meetups/${id}.json`, {
+                method: 'PATCH',
+                body: JSON.stringify({isFavorite: !isFavorite}),
+                headers: {'Content-Type': 'application/json'},
+            });
+
+            meetups.toggleFavorite(id);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 </script>
 
 <style>
@@ -30,15 +45,14 @@
         <h2>{subtitle}</h2>
         <address>{address}</address>
     </header>
-    <div class="image"><img src={image} alt={title} /></div>
+    <div class="image"><img transition:fade={{duration: 400}} src={image} alt={title} /></div>
     <div class="content">
         <p>{description}</p>
     </div>
     <footer>
         <a href="mailto:{email}">Contact me</a>
-        <Button>Show Details</Button>
-        <Button mode="outline" state={isFavorite ? null : 'success'} on:click={() => dispatch('togglefavorite', id)}>
-            {isFavorite ? 'Dislike' : 'Favorite'}
-        </Button>
+        <Button type="button" mode="outline" on:click={() => dispatch('edit', id)}>Edit</Button>
+        <Button on:click={() => dispatch('detail', id)}>Show Details</Button>
+        <Button mode="outline" state={isFavorite ? null : 'success'} on:click={toggleFavorite}>{isFavorite ? 'Dislike' : 'Favorite'}</Button>
     </footer>
 </article>

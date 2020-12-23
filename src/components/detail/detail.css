@@ -1,0 +1,36 @@
+section {
+    margin-top: 4rem;
+}
+
+.image {
+    width: 100%;
+    height: 25rem;
+    background: #e7e7e7;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.content {
+    width: 80%;
+    margin: auto;
+    text-align: center;
+}
+
+h1 {
+    margin: .5rem 0;
+    font-family: 'Roboto Slab', sans-serif;
+    font-size: 2rem;
+}
+
+h2 {
+    color: #6b6b6b;
+    font-size: 1.25rem;
+}
+
+p {
+    font-size: 1.5rem;
+}

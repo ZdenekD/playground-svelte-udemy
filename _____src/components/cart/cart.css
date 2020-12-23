@@ -1,0 +1,12 @@
+section {
+    width: 30rem;
+    max-width: 90%;
+    margin: 2rem auto;
+    border-bottom: 2px solid #ccc;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
