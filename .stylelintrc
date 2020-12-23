@@ -100,7 +100,7 @@
     "no-unknown-animations": [true, {
       "severity": "warning"
     }],
-    "number-leading-zero": "never",
+    "number-leading-zero": "always",
     "number-no-trailing-zeros": true,
     "property-case": "lower",
     "property-no-vendor-prefix": true,
